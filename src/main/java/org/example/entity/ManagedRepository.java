@@ -17,6 +17,9 @@ public class ManagedRepository {
     private String repository_url;
     private String description;
 
+    @Lob
+    private String readme; // 해당 repository의 readme 파일
+
     private LocalDateTime createdAt; // 첫 커밋 시간
     private LocalDateTime updatedAt; // 최근 업데이트 시간
     private LocalDateTime pushedAt; // 최근 푸쉬 시간
@@ -27,7 +30,6 @@ public class ManagedRepository {
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -35,7 +37,6 @@ public class ManagedRepository {
     public String getUsername() {
         return username;
     }
-
     public void setUsername(String username) {
         this.username = username;
     }
@@ -43,7 +44,6 @@ public class ManagedRepository {
     public String getRepository_name() {
         return repository_name;
     }
-
     public void setRepository_name(String repository_name) {
         this.repository_name = repository_name;
     }
@@ -51,7 +51,6 @@ public class ManagedRepository {
     public String getRepository_url() {
         return repository_url;
     }
-
     public void setRepository_url(String repository_url) {
         this.repository_url = repository_url;
     }
@@ -59,15 +58,17 @@ public class ManagedRepository {
     public String getDescription() {
         return description;
     }
-
     public void setDescription(String description) {
         this.description = description;
     }
 
+    public String getReadme() { return readme; }
+    public void setReadme(String readme) { this.readme = readme; }
+
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
@@ -75,7 +76,6 @@ public class ManagedRepository {
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
-
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
@@ -83,8 +83,8 @@ public class ManagedRepository {
     public LocalDateTime getPushedAt() {
         return pushedAt;
     }
-
     public void setPushedAt(LocalDateTime pushedAt) {
         this.pushedAt = pushedAt;
     }
+
 }
