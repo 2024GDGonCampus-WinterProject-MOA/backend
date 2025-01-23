@@ -4,6 +4,8 @@ import org.example.entity.ManagedRepository;
 import org.example.repository.RepositoryManager;
 import org.example.service.OpenAIService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -47,6 +49,24 @@ public class ReadmeController {
         } catch (Exception e) {
             e.printStackTrace();
             return "Error: " + e.getMessage();
+        }
+    }
+
+    // README 읽기
+    @GetMapping("/readme/{id}")
+    public ResponseEntity<String> getReadmeById(@PathVariable Long id) {
+        try {
+            ManagedRepository repository = repositoryManager.findById(id)
+                    .orElseThrow(() -> new RuntimeException("No repository found with id: " + id));
+
+            if (repository.getReadme() == null || repository.getReadme().isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                        .body("No readme file found for repository with id: " + id);
+            }
+            return ResponseEntity.ok(repository.getReadme());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error: " + e.getMessage());
         }
     }
 
