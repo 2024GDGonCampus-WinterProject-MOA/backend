@@ -3,7 +3,6 @@ package org.example.controller;
 import org.example.dto.RepositoryResponseDto;
 import org.example.dto.RepositorySaveRequestDto;
 import org.example.dto.RepositoryUpdateRequestDto;
-import org.example.entity.ManagedRepository;
 import org.example.service.GitHubService;
 import org.example.service.RepositoryService;
 import org.springframework.http.ResponseEntity;

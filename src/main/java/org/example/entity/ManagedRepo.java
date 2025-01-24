@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name="repository")
-public class ManagedRepository {
+public class ManagedRepo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
