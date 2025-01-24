@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+</head>
+<body>
+<h1>Welcome to Home Page!</h1>
+
+<!-- 사용자 정보 출력 -->
+<div>
+    <h2>User Information:</h2>
+    <p><strong>Username:</strong> <span th:text="${username}">Default Username</span></p>
+    <p><strong>Nickname:</strong> <span th:text="${nickname}">Default Nickname</span></p>
+    <p><strong>Email:</strong> <span th:text="${email}">Default Email</span></p>
+    <p><strong>Role:</strong> <span th:text="${role}">Default Role</span></p>
+    <img th:src="${profileImg}" alt="Profile Image" style="width: 150px; height: 150px;">
+</div>
+
+<!-- 로그아웃 링크 -->
+<a href="/logout">Logout</a>
+</body>
+</html>
