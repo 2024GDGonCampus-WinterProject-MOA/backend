@@ -4,51 +4,49 @@ package org.example.service;
 import org.example.dto.RepositoryResponseDto;
 import org.example.dto.RepositorySaveRequestDto;
 import org.example.dto.RepositoryUpdateRequestDto;
-import org.example.entity.ManagedRepository;
-import org.example.repository.RepositoryManager;
+import org.example.entity.ManagedRepo;
+import org.example.repository.RepoRepository;
 import org.springframework.stereotype.Service;
 
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class RepositoryService {
-    private final RepositoryManager repositoryManager;
+    private final RepoRepository repoRepository;
     private final GitHubService gitHubService;
 
-    public RepositoryService(RepositoryManager repositoryManager, GitHubService gitHubService) {
-        this.repositoryManager = repositoryManager;
+    public RepositoryService(RepoRepository repoRepository, GitHubService gitHubService) {
+        this.repoRepository = repoRepository;
         this.gitHubService = gitHubService;
     }
 
 
     // 선택한 Repository 저장 메소드
     public void saveSelectedRepository(String username, RepositorySaveRequestDto requestDto) {
-        ManagedRepository managedRepository = new ManagedRepository();
+        ManagedRepo managedRepo = new ManagedRepo();
         //OAuth2에서 가져온 username 설정
-        managedRepository.setUsername(username);
+        managedRepo.setUsername(username);
 
         // DTO 데이터를 Entity에 매핑
-        managedRepository.setRepository_name(requestDto.getName());
-        managedRepository.setRepository_url(requestDto.getHtmlUrl());
-        managedRepository.setDescription(requestDto.getDescription());
+        managedRepo.setRepository_name(requestDto.getName());
+        managedRepo.setRepository_url(requestDto.getHtmlUrl());
+        managedRepo.setDescription(requestDto.getDescription());
 
         // 날짜 정보
-        managedRepository.setCreatedAt(LocalDateTime.parse(requestDto.getCreatedAt()));
-        managedRepository.setUpdatedAt(LocalDateTime.parse(requestDto.getUpdatedAt()) );
-        managedRepository.setPushedAt(LocalDateTime.parse(requestDto.getPushedAt()));
+        managedRepo.setCreatedAt(LocalDateTime.parse(requestDto.getCreatedAt()));
+        managedRepo.setUpdatedAt(LocalDateTime.parse(requestDto.getUpdatedAt()) );
+        managedRepo.setPushedAt(LocalDateTime.parse(requestDto.getPushedAt()));
 
         //DB 저장
-        repositoryManager.save(managedRepository);
+        repoRepository.save(managedRepo);
     }
 
 
     // 모든 Repository 조회 로직
     public List<RepositoryResponseDto> getAllRepositories(String username) {
-        List<ManagedRepository> repositories = repositoryManager.findByUsername(username);
+        List<ManagedRepo> repositories = repoRepository.findByUsername(username);
 
         // entity 리스트를 DTO 리스트로 변환하여 반환
         return repositories.stream()
@@ -65,7 +63,7 @@ public class RepositoryService {
     // Repository 이름, 설명, Url 변경 메소드
     public void updateRepository(Long id, RepositoryUpdateRequestDto requestDto) {
         // 기존 데이터 가져오기
-        ManagedRepository repository = this.repositoryManager.findById(id)
+        ManagedRepo repository = this.repoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Invalid Repository ID")); //데이터 없는 경우 예외처리
 
         // Repository 이름 업데이트
@@ -90,12 +88,12 @@ public class RepositoryService {
         }
 
         // 변경된 엔티티 저장
-        this.repositoryManager.save(repository);
+        this.repoRepository.save(repository);
     }
 
     // Repository 삭제 로직
     public void deleteRepository(Long id) {
-        repositoryManager.deleteById(id);
+        repoRepository.deleteById(id);
     }
 
 }

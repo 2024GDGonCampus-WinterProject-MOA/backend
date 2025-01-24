@@ -1,7 +1,7 @@
 package org.example.controller;
 
-import org.example.entity.ManagedRepository;
-import org.example.repository.RepositoryManager;
+import org.example.entity.ManagedRepo;
+import org.example.repository.RepoRepository;
 import org.example.service.OpenAIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ public class ReadmeController {
     private OpenAIService openAIService;
 
     @Autowired
-    private RepositoryManager repositoryManager;
+    private RepoRepository repoRepository;
 
     // README 생성 및 저장
     @PostMapping("/generate-readme")
@@ -39,10 +39,10 @@ public class ReadmeController {
             String generatedReadme = openAIService.generateReadme(prompt);
 
             // DB에 저장
-            ManagedRepository repository = new ManagedRepository();
+            ManagedRepo repository = new ManagedRepo();
             repository.setReadme(generatedReadme);
             repository.setUpdatedAt(LocalDateTime.now()); // 최근 업데이트 시간 추가
-            repositoryManager.save(repository);
+            repoRepository.save(repository);
 
             return "README 생성 및 저장 완료. Repository ID: " + repository.getId();
 
@@ -56,7 +56,7 @@ public class ReadmeController {
     @GetMapping("/readme/{id}")
     public ResponseEntity<String> getReadmeById(@PathVariable Long id) {
         try {
-            ManagedRepository repository = repositoryManager.findById(id)
+            ManagedRepo repository = repoRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("No repository found with id: " + id));
 
             if (repository.getReadme() == null || repository.getReadme().isEmpty()) {
@@ -80,13 +80,13 @@ public class ReadmeController {
             }
 
             // DB에서 데이터 찾기
-            ManagedRepository repository = repositoryManager.findById(id)
+            ManagedRepo repository = repoRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Repository not found with ID: " + id));
 
             // README 수정
             repository.setReadme(updatedReadme);
             repository.setUpdatedAt(LocalDateTime.now()); // 최근 업데이트 시간 갱신
-            repositoryManager.save(repository);
+            repoRepository.save(repository);
 
             return "README 수정 완료. Repository ID: " + id;
 
@@ -101,11 +101,11 @@ public class ReadmeController {
     public String deleteReadme(@PathVariable Long id) {
         try {
             // DB에서 데이터 찾기
-            ManagedRepository repository = repositoryManager.findById(id)
+            ManagedRepo repository = repoRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Repository not found with ID: " + id));
 
             // 삭제
-            repositoryManager.delete(repository);
+            repoRepository.delete(repository);
 
             return "README 삭제 완료. Repository ID: " + id;
 
