@@ -39,6 +39,7 @@ public class GitHubUser {
     @Column(nullable = false)
     private Role role; //권한 관리
 
+    @Getter
     public enum Role{
         ROLE_USER("ROLE_USER"),
         ROLE_ADMIN("ROLE_ADMIN");
@@ -49,9 +50,6 @@ public class GitHubUser {
             this.authority = authority;
         }
 
-        public String getAuthority() {
-            return authority;
-        }
     }
     // ADMIN 권한 확인 Method
     public boolean isAdmin() {

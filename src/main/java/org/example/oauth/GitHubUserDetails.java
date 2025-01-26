@@ -36,7 +36,7 @@ public class GitHubUserDetails implements OAuth2User {
 
     @Override
     public String getName(){
-        return gitHubUser.getId()+"";
+        return gitHubUser.getUsername();
     }
 
     public String getEmail() {

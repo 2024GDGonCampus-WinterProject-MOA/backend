@@ -25,8 +25,8 @@ public class GitHubService {
         this.authorizedClientService = authorizedClientService;
     }
 
-    public List<Map<String, Object>> fetchUserRepositories(OAuth2User principal) {
-        OAuth2AuthorizedClient client = authorizedClientService.loadAuthorizedClient("github", principal.getName());
+    public List<Map<String, Object>> fetchUserRepositories(String username) {
+        OAuth2AuthorizedClient client = authorizedClientService.loadAuthorizedClient("github", username);
 
         if (client == null || client.getAccessToken() == null) {
             throw new IllegalStateException("OAuth2AuthorizedClient or AccessToken is null");

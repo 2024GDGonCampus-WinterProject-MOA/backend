@@ -1,6 +1,7 @@
 package org.example.service;
 //GitHub 데이터를 가공, DB와 상호작용하는 비즈니스 로직 처리
 
+import lombok.RequiredArgsConstructor;
 import org.example.dto.RepositoryResponseDto;
 import org.example.dto.RepositorySaveRequestDto;
 import org.example.dto.RepositoryUpdateRequestDto;
@@ -13,15 +14,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class RepositoryService {
+@RequiredArgsConstructor
+public class RepoService {
     private final RepoRepository repoRepository;
-    private final GitHubService gitHubService;
-
-    public RepositoryService(RepoRepository repoRepository, GitHubService gitHubService) {
-        this.repoRepository = repoRepository;
-        this.gitHubService = gitHubService;
-    }
-
 
     // 선택한 Repository 저장 메소드
     public void saveSelectedRepository(String username, RepositorySaveRequestDto requestDto) {

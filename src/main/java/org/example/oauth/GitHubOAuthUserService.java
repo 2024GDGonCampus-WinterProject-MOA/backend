@@ -47,5 +47,9 @@ public class GitHubOAuthUserService extends DefaultOAuth2UserService { //OAuth2 
         return new GitHubUserDetails(user, attributes);
     }
 
+    public GitHubUser findByUsername(String username) {
+        return gitHubUserRepository.findByUsername(username).orElse(null);
+    }
+
 }
 
