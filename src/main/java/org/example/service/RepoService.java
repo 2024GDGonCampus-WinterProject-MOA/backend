@@ -7,19 +7,30 @@ import org.example.dto.RepositorySaveRequestDto;
 import org.example.dto.RepositoryUpdateRequestDto;
 import org.example.entity.ManagedRepo;
 import org.example.repository.RepoRepository;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class RepoService {
     private final RepoRepository repoRepository;
 
+    @Transactional
+    public List<ManagedRepo> saveSelectedRepositories(String username, List<RepositorySaveRequestDto> requestDtos) {
+        // DTO 리스트를 Entity 리스트로 변환하여 저장
+        return requestDtos.stream()
+                .map(requestDto -> saveSelectedRepository(username, requestDto))
+                .toList();
+    }
+
     // 선택한 Repository 저장 메소드
-    public void saveSelectedRepository(String username, RepositorySaveRequestDto requestDto) {
+    @Transactional
+    public ManagedRepo saveSelectedRepository(String username, RepositorySaveRequestDto requestDto) {
         ManagedRepo managedRepo = new ManagedRepo();
         //OAuth2에서 가져온 username 설정
         managedRepo.setUsername(username);
@@ -35,7 +46,7 @@ public class RepoService {
         managedRepo.setPushedAt(LocalDateTime.parse(requestDto.getPushedAt()));
 
         //DB 저장
-        repoRepository.save(managedRepo);
+        return repoRepository.save(managedRepo);
     }
 
 
@@ -44,6 +55,7 @@ public class RepoService {
         List<ManagedRepo> repositories = repoRepository.findByUsername(username);
 
         // entity 리스트를 DTO 리스트로 변환하여 반환
+        // TODO: 개발 기간, 개발 상태 && 레포 url 제거
         return repositories.stream()
                 .map(repo -> new RepositoryResponseDto(
                         repo.getId(),
@@ -54,8 +66,23 @@ public class RepoService {
                 .toList();
     }
 
+    // TODO: 단일 레포 조회 메소드 추가
+    public RepositoryResponseDto getRepository(Long id) {
+        ManagedRepo repository = this.repoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Invalid Repository ID"));
+
+        // TODO: 개발 기간, 개발 상태
+        return new RepositoryResponseDto(
+                repository.getId(),
+                repository.getRepository_name(),
+                repository.getRepository_url(),
+                repository.getDescription()
+        );
+    }
+
 
     // Repository 이름, 설명, Url 변경 메소드
+    // TODO: 프로젝트 종류, 개발 기간, 한 줄 설명, 개발 상태(개발 완료이면 최근 푸시 갱신)
     public void updateRepository(Long id, RepositoryUpdateRequestDto requestDto) {
         // 기존 데이터 가져오기
         ManagedRepo repository = this.repoRepository.findById(id)
