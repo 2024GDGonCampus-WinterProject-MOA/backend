@@ -66,9 +66,7 @@ public class ApiController {
     // 4) 저장된 Repository 수정
     @PutMapping("/{id}")
     public ResponseEntity<String> updateRepository(@PathVariable Long id, @RequestBody RepositoryUpdateRequestDto requestDto) {
-
         repoService.updateRepository(id, requestDto);
-
         return ResponseEntity.ok("Repository updated");
     }
 

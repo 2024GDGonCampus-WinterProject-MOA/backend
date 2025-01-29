@@ -2,7 +2,9 @@ package org.example.service;
 // 외부 GitHub API와의 통신을 담당하는 Service
 // 사용자 리포지토리 데이터 가져옴
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -19,22 +21,17 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class GitHubService {
-
-    private final OAuth2AuthorizedClientService authorizedClientService;
-
-    public GitHubService(OAuth2AuthorizedClientService authorizedClientService) {
-        this.authorizedClientService = authorizedClientService;
-    }
+    private final RedisTemplate<String, String> redisTemplate;
 
     public List<Map<String, Object>> fetchUserRepositories(String username) {
-        OAuth2AuthorizedClient client = authorizedClientService.loadAuthorizedClient("github", username);
-
-        if (client == null || client.getAccessToken() == null) {
-            throw new IllegalStateException("OAuth2AuthorizedClient or AccessToken is null");
+        String accessToken = null;
+        try {
+            accessToken = (String) redisTemplate.opsForHash().get("github", username);
+        } catch (Exception e) {
+            throw new RuntimeException("Access token이 없습니다.");
         }
-
-        String accessToken = client.getAccessToken().getTokenValue();
         String apiUrl = "https://api.github.com/user/repos?affiliation=owner,collaborator,organization_member&per_page=100&page=1";
 
         RestTemplate restTemplate = new RestTemplate();
