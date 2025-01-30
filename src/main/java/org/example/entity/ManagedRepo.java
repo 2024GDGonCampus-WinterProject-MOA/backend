@@ -1,5 +1,6 @@
 package org.example.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -20,9 +21,26 @@ public class ManagedRepo {
     @Lob
     private String readme; // 해당 repository의 readme 파일
 
+    @JsonFormat(pattern = "yyyy-MM")
     private LocalDateTime createdAt; // 첫 커밋 시간
+
+    @JsonFormat(pattern = "yyyy-MM")
     private LocalDateTime updatedAt; // 최근 업데이트 시간
+
+    @JsonFormat(pattern = "yyyy-MM")
     private LocalDateTime pushedAt; // 최근 푸쉬 시간
+
+    //개발 상태
+    private String devStatus = "개발중"; // User의 수정이 있기전까지는 "개발 중"이 Default 값
+
+    public enum ProjectType {
+        미선택, // Default
+        공모전,
+        동아리,
+        해커톤,
+        개인프로젝트
+    }
+    private ProjectType projectType = ProjectType.미선택;
 
 
     // Getter, Setter
@@ -86,5 +104,11 @@ public class ManagedRepo {
     public void setPushedAt(LocalDateTime pushedAt) {
         this.pushedAt = pushedAt;
     }
+
+    public String getDevStatus() { return devStatus; }
+    public void setDevStatus(String devStatus) { this.devStatus = devStatus; }
+
+    public ProjectType getProjectType() { return projectType; }
+    public void setProjectType(ProjectType projectType) { this.projectType = projectType; }
 
 }

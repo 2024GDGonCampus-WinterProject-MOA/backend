@@ -3,6 +3,7 @@ package org.example.controller;
 import org.example.dto.RepositoryResponseDto;
 import org.example.dto.RepositorySaveRequestDto;
 import org.example.dto.RepositoryUpdateRequestDto;
+import org.example.dto.SingleRepositoryResponseDto;
 import org.example.service.GitHubService;
 import org.example.service.RepoService;
 import org.example.utils.JwtUtil;
@@ -61,6 +62,17 @@ public class ApiController {
         }
         List<RepositoryResponseDto> repositories = repoService.getAllRepositories(username);
         return ResponseEntity.ok(repositories);
+    }
+
+    // 4) 저장된 Repository 단일 조회
+    @GetMapping("{id}")
+    public ResponseEntity<SingleRepositoryResponseDto> getSingleRepository(@PathVariable("id") Long id) {
+        String username = JwtUtil.getUsernameFromContext();
+        if (username == null) {
+            System.out.println("username이 없습니다.");
+        }
+        SingleRepositoryResponseDto repository = repoService.getRepository(id);
+        return ResponseEntity.ok(repository);
     }
 
     // 4) 저장된 Repository 수정
