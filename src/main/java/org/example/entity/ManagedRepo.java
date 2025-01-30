@@ -18,7 +18,11 @@ public class ManagedRepo {
     private String description;
 
     @Lob
-    private String readme; // 해당 repository의 readme 파일
+    private String readme; // 해당 repository의 github에 올라와 있는 readme 파일
+
+    @Lob
+    private String moa_readme; // 해당 repository의 moa에서 생성한 가장 최근의 readme 파일 / .md 파일이 담김.
+    private Integer has_moa_readme; // 해당 repository에 moa에서 생성한 readme 파일이 있는지 여부, 0:false / 1:true
 
     private LocalDateTime createdAt; // 첫 커밋 시간
     private LocalDateTime updatedAt; // 최근 업데이트 시간
@@ -65,6 +69,11 @@ public class ManagedRepo {
     public String getReadme() { return readme; }
     public void setReadme(String readme) { this.readme = readme; }
 
+    public String getMoa_readme() { return moa_readme; }
+    public void setMoa_readme(String moa_readme) { this.moa_readme = moa_readme; }
+
+    public Integer getHas_moa_readme() { return has_moa_readme; }
+    public void setHas_moa_readme(Integer has_moa_readme) { this.has_moa_readme = has_moa_readme; }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
