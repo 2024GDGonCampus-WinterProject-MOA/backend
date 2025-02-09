@@ -158,11 +158,6 @@ public class RepoService {
         return LocalDateTime.parse(pushedAtStr);
     }
 
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
-
     // Repository 삭제 로직
     public void deleteRepository(Long id) {
         repoRepository.deleteById(id);
