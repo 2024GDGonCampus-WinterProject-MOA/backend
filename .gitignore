@@ -42,5 +42,4 @@ bin/
 .DS_Store
 
 ### application.properties ###
-application.properties
-application-API-KEY.properties
+application**.properties
