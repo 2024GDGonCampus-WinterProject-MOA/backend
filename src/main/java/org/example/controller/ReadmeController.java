@@ -36,10 +36,42 @@ public class ReadmeController {
                 return "Error: Missing required parameter: 'messages'.";
             }
 
-            var prompt = messages.get(0).get("content");
-            if (prompt == null || prompt.isEmpty()) {
+            // 모아 프롬프트
+            var moa_prompt = """
+                    [prompt start]
+                    같이 제공될 발표 대본의 내용을 바탕으로 프로젝트의 핵심 정보를 파악한 뒤,
+                    다음의 내용을 필히 포함하여 README.md 파일을 작성하라.
+                    마크다운 코드로 제공하라.
+                    - 프로젝트 제목
+                    - 프로젝트 로고 또는 대표 이미지 (너비 300px, 가운데 정렬)
+                    - Repository 방문 횟수 (선택사항)
+                    - 프로젝트 소개 및 개발 기간
+                    - 배포 주소 (있는 경우)
+                    - 팀 소개 (팀 프로젝트인 경우)
+                    - 시작 가이드 (요구사항, 설치 및 실행 방법)
+                    - 기술 스택 (가능하면 배지 사용)
+                    - 화면 구성 또는 API 주소
+                    - 주요 기능
+                    - 아키텍처 및 디렉토리 구조
+                    - 기타 추가 사항 (개발 문서, 회고 등)
+                    
+                    다음에 유의하라.
+                    - 필요에 따라 언급되지 않은 내용을 추가/수정/삭제하라. 이 과정에서 창작을 해도 좋다.
+                    - 코드 블록, 표를 포함하여 가시적으로 표시할 수 있는 수단을 적극 활용하라.
+                    - 전문적이고 간결한 어조를 유지하라.
+                    - 코드 이외의 다른 메시지는 일체 작성하지 않는다.
+                    - 내용은 사용자가 수정할 필요가 없도록 완벽해야한다. 사용자는 내용을 일체 수정 없이 바로 사용한다.
+                    [prompt end]
+                    [script start]
+                    """;
+
+            var script = messages.get(0).get("content");
+
+            if (script == null || script.isEmpty()) {
                 return "Error: Missing 'content' in the 'messages' parameter.";
             }
+
+            var prompt = moa_prompt + script;
 
             // OpenAI API 호출
             String generatedReadme = openAIService.generateReadme(prompt);
