@@ -48,7 +48,13 @@ public class GitHubService {
                 .collect(Collectors.collectingAndThen(
                         Collectors.toMap(
                                 repo -> (Integer) repo.get("id"), // 고유 ID 기준
-                                repo -> repo,
+                                repo -> {
+                                    Map<String, Object> owner = (Map<String, Object>) repo.get("owner");
+                                    if ("Organization".equals(owner.get("type"))) { // type: 사용자/조직 구분 ('user'/'Organization')
+                                        repo.put("name", repo.get("name") + " (" + owner.get("login") + ")"); // Repo 이름 옆에 (조직명) 추가
+                                    }
+                                    return repo;
+                                },
                                 (existing, replacement) -> existing // 중복시, 기존 항목 유지
                         ),
                         map -> new ArrayList<>(map.values())
