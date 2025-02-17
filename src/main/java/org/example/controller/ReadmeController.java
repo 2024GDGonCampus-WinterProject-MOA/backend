@@ -2,7 +2,9 @@ package org.example.controller;
 
 import org.example.entity.ManagedRepo;
 import org.example.repository.RepoRepository;
+import org.example.service.GitHubService;
 import org.example.service.OpenAIService;
+import org.example.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,9 @@ public class ReadmeController {
 
     @Autowired
     private OpenAIService openAIService;
+
+    @Autowired
+    private GitHubService gitHubService;
 
     @Autowired
     private RepoRepository repoRepository;
@@ -136,6 +141,13 @@ public class ReadmeController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
 
+    }
+
+    // README 다운로드
+    @GetMapping("/download-readme/original/{owner}/{reponame}")
+    public String downloadReadmeOriginal(@PathVariable String owner, @PathVariable String reponame) {
+        String username = JwtUtil.getUsernameFromContext();
+        return gitHubService.fetchReadme(owner, reponame, username);
     }
 
     // README 수정

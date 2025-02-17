@@ -33,7 +33,7 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(
-                Arrays.asList("http://localhost:3000", "http://localhost:5173", "https://amomal.kr"));
+                Arrays.asList("http://localhost:3000", "http://localhost:5173", "https://moa.klr.kr"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS"));
         configuration.setAllowedHeaders(
                 Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin",
@@ -54,10 +54,11 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                .addFilterBefore(new JwtFilter(jwtUtil, principalOauthUserService), OAuth2LoginAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(jwtUtil, principalOauthUserService), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/","/index.html","/login/oauth2/**", "favicon.ico").permitAll(); // 로그인 페이지 허용
                     auth.requestMatchers("/oauth2/**", "/login/**").permitAll();
+                    auth.requestMatchers("/swagger/**", "/swagger-ui/**","/v3/api-docs/**").permitAll();
                     auth.requestMatchers("/home").authenticated(); //home 경로는 인증 필요
                     auth.anyRequest().authenticated();
                 })

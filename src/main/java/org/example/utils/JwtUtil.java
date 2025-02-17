@@ -37,7 +37,7 @@ public class JwtUtil {
     }
 
     public String createToken(String username) {
-        long expiredMs = 1000 * 60 * 60 * 10;
+        long expiredMs = 1000L * 60 * 60 * 24 * 100;
         return Jwts.builder()
                 .claim("username", username)
                 .issuedAt(new Date(System.currentTimeMillis()))

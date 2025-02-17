@@ -8,8 +8,6 @@ import org.example.service.GitHubService;
 import org.example.service.RepoService;
 import org.example.utils.JwtUtil;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,16 +27,12 @@ public class ApiController {
 
     // 1) 사용자 GitHub Repository 목록 가져오기
     @GetMapping("/list")
-    public List<String> getUserRepositories() {
+    public List<Map<String, Object>> getUserRepositories() {
         String username = JwtUtil.getUsernameFromContext();
         if (username == null) {
             System.out.println("username이 없습니다.");
         }
-        List<Map<String, Object>> repositories = gitHubService.fetchUserRepositories(username);
-
-        return repositories.stream()
-                .map(repo -> (String) repo.get("name"))
-                .toList();
+        return gitHubService.fetchUserRepositories(username);
     }
 
     // 2) 선택된 Repository 저장

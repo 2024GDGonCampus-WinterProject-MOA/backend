@@ -44,8 +44,12 @@ dependencies {
     //Github Api
     implementation group: 'org.kohsuke', name: 'github-api', version: '1.125'
     //mariadb
-
     implementation 'org.mariadb.jdbc:mariadb-java-client:3.1.4'
+
+    // swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.2'
 
     // JWT
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
