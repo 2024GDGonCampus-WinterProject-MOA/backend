@@ -2,6 +2,7 @@ package org.example.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.entity.ManagedRepo;
 
 
 @Getter
@@ -13,4 +14,5 @@ public class RepositorySaveRequestDto {
     private String createdAt;
     private String updatedAt;
     private String pushedAt;
+    private ManagedRepo.ProjectType projectType;
 }

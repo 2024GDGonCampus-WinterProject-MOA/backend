@@ -69,14 +69,14 @@ public class ApiController {
         return ResponseEntity.ok(repository);
     }
 
-    // 4) 저장된 Repository 수정
+    // 5) 저장된 Repository 수정
     @PutMapping("/{id}")
     public ResponseEntity<String> updateRepository(@PathVariable Long id, @RequestBody RepositoryUpdateRequestDto requestDto) {
         repoService.updateRepository(id, requestDto);
         return ResponseEntity.ok("Repository updated");
     }
 
-    // 5) 저장된 Repository 삭제
+    // 6) 저장된 Repository 삭제
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteRepository(@PathVariable Long id) {
         repoService.deleteRepository(id);

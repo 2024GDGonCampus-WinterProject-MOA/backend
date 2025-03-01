@@ -63,6 +63,7 @@ public class RepoService {
         managedRepo.setPushedAt(LocalDateTime.parse(requestDto.getPushedAt()));
 
         managedRepo.setDevStatus("개발중"); // 초기 상태 설정
+        managedRepo.setProjectType(requestDto.getProjectType()); // Feat: /save api ProjectType 속성 추가
 
         //DB 저장
         return repoRepository.save(managedRepo);
