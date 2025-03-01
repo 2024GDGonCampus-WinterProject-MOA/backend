@@ -61,6 +61,12 @@ public class GitHubService {
         result.put("name", ownerLogin + "/" + repoName);
         result.put("owner", ownerLogin);
         result.put("repo_name", repoName);
+        // '/list', '/save' api간 데이터 전달을 위한 추가
+        result.put("htmlUrl", repo.get("html_url")); // 저장소 URL
+        result.put("description", repo.get("description")); // 설명
+        result.put("createdAt", repo.get("created_at")); // 생성 날짜
+        result.put("updatedAt", repo.get("updated_at")); // 업데이트 날짜
+        result.put("pushedAt", repo.get("pushed_at")); // 마지막 푸시 날짜
         return result;
     }
 

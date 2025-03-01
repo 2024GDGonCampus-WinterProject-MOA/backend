@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface RepoRepository extends JpaRepository<ManagedRepo, Long> {
     List<ManagedRepo> findByUsername(String username);
+    // ProjectType 미선택인 레포지토리 조회를 위한 추가
+    List<ManagedRepo> findByProjectType(ManagedRepo.ProjectType projectType);
 }
