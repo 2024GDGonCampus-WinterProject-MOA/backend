@@ -4,8 +4,10 @@ import org.example.dto.RepositoryResponseDto;
 import org.example.dto.RepositorySaveRequestDto;
 import org.example.dto.RepositoryUpdateRequestDto;
 import org.example.dto.SingleRepositoryResponseDto;
+import org.example.entity.ManagedRepo;
 import org.example.service.GitHubService;
 import org.example.service.RepoService;
+import org.example.service.UnselectedRepoService;
 import org.example.utils.JwtUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +21,12 @@ public class ApiController {
 
     private final RepoService repoService;
     private final GitHubService gitHubService;
+    private final UnselectedRepoService unselectedRepoService;
 
-    public ApiController(RepoService repoService, GitHubService gitHubService) {
+    public ApiController(RepoService repoService, GitHubService gitHubService, UnselectedRepoService unselectedRepoService) {
         this.repoService = repoService;
         this.gitHubService = gitHubService;
+        this.unselectedRepoService = unselectedRepoService;
     }
 
     // 1) 사용자 GitHub Repository 목록 가져오기
@@ -81,6 +85,18 @@ public class ApiController {
     public ResponseEntity<String> deleteRepository(@PathVariable Long id) {
         repoService.deleteRepository(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // 7) DB에 저장된 레포 제외 선택되지 않은 레포 리스트 조회
+    @GetMapping("/unselected")
+    public ResponseEntity<List<Map<String, Object>>> getUnselectedRepositories() {
+        String username = JwtUtil.getUsernameFromContext();
+        if (username == null) {
+            throw new RuntimeException("사용자 이름이 없습니다.");
+        }
+
+        List<Map<String, Object>> unselectedRepositories = unselectedRepoService.getUnselectedRepositories(username);
+        return ResponseEntity.ok(unselectedRepositories);
     }
 
 }
