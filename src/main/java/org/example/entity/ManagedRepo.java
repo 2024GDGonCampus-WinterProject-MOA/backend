@@ -19,9 +19,11 @@ public class ManagedRepo {
     private String description;
 
     @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String readme; // 해당 repository의 github에 올라와 있는 readme 파일
 
     @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String moa_readme; // 해당 repository의 moa에서 생성한 가장 최근의 readme 파일 / .md 파일이 담김.
     private Integer has_moa_readme; // 해당 repository에 moa에서 생성한 readme 파일이 있는지 여부, 0:false / 1:true
 
