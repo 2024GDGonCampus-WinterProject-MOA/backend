@@ -32,19 +32,18 @@ public class ReadmeController {
     @Autowired
     private RepoRepository repoRepository;
 
-
-
     // README 생성 및 저장
     @PostMapping("/generate-readme/{id}")
-    public String generateReadme(@RequestBody Map<String, Object> request, Long Id) {
+    public String generateReadme(@RequestBody Map<String, Object> request, @PathVariable Long id) {
         try {
             var messages = (java.util.List<Map<String, String>>) request.get("messages");
-            if (messages == null || messages.isEmpty()) {
+
+            if (messages == null || messages.isEmpty() || messages.get(0) == null) {
                 return "Error: Missing required parameter: 'messages'.";
             }
 
             // 모아 프롬프트
-            var moa_prompt = """
+            var moaPrompt = """
                     [prompt start]
                     같이 제공될 발표 대본의 내용을 바탕으로 프로젝트의 핵심 정보를 파악한 뒤,
                     다음의 내용을 필히 포함하여 README.md 파일을 작성하라.
@@ -73,29 +72,33 @@ public class ReadmeController {
                     """;
 
             var script = messages.get(0).get("content");
-
             if (script == null || script.isEmpty()) {
                 return "Error: Missing 'content' in the 'messages' parameter.";
             }
 
-            var prompt = moa_prompt + script;
+            var prompt = moaPrompt + script; // 최종 프롬프트
 
             // OpenAI API 호출
-            String generatedReadme = openAIService.generateReadme(prompt);
+            String generatedREADME = openAIService.generateReadme(prompt);
+            if (generatedREADME == null || generatedREADME.isBlank()) {
+                return "Error: README 생성 실패";
+            }
+
 
             // DB에 저장
-            Optional<ManagedRepo> optionalRepository = repoRepository.findById(Id);
+            Optional<ManagedRepo> optionalRepository = repoRepository.findById(id);
 
             if (optionalRepository.isPresent()) {
-                ManagedRepo repository = optionalRepository.get();
-                repository.setMoa_readme(generatedReadme);
+                ManagedRepo repository = repoRepository.findById(id)
+                        .orElseThrow(() -> new RuntimeException("Error : Repository not found with ID: " + id));
+                repository.setMoa_readme(generatedREADME);
                 if (repository.getHas_moa_readme() == 0 || repository.getHas_moa_readme() == null) {
                     repository.setHas_moa_readme(1);
                 }
                 repoRepository.save(repository);
                 return "README 생성 및 저장 완료. Repository ID: " + repository.getId();
             } else {
-                return "Error: Repository not found with ID : " + Id + ".";
+                return "Error: Repository not found with ID : " + id + ".";
             }
 
         } catch (Exception e) {
