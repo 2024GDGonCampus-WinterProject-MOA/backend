@@ -32,8 +32,10 @@ public class ReadmeController {
     @Autowired
     private RepoRepository repoRepository;
 
+
+
     // README 생성 및 저장
-    @PostMapping("/generate-readme")
+    @PostMapping("/generate-readme/{id}")
     public String generateReadme(@RequestBody Map<String, Object> request, Long Id) {
         try {
             var messages = (java.util.List<Map<String, String>>) request.get("messages");
@@ -87,7 +89,7 @@ public class ReadmeController {
             if (optionalRepository.isPresent()) {
                 ManagedRepo repository = optionalRepository.get();
                 repository.setMoa_readme(generatedReadme);
-                if (repository.getHas_moa_readme() == 0) {
+                if (repository.getHas_moa_readme() == 0 || repository.getHas_moa_readme() == null) {
                     repository.setHas_moa_readme(1);
                 }
                 repoRepository.save(repository);
@@ -159,7 +161,7 @@ public class ReadmeController {
                 return "Error: 'readme' 내용이 비어 있습니다.";
             }
 
-            // DB에서 데이터 찾기
+            // DB에서 레포지토리 찾기
             ManagedRepo repository = repoRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Repository not found with ID: " + id));
 
@@ -176,19 +178,21 @@ public class ReadmeController {
         }
     }
 
-    // README 삭제
-    @DeleteMapping("/delete-readme/{id}")
-    public String deleteReadme(@PathVariable Long id) {
+    // README 삭제 (README 칸 비우기)
+    @PutMapping("/delete-readme/{id}")
+    public String clearReadme(@PathVariable Long id) {
         try {
-            // DB에서 데이터 찾기
+            // DB에서 레포지토리 찾기
             ManagedRepo repository = repoRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Repository not found with ID: " + id));
 
-            // 삭제
+            // readme 삭제
             repository.setHas_moa_readme(0);
-            repoRepository.delete(repository);
+            repository.setReadme("");
+            repository.setUpdatedAt(LocalDateTime.now());
+            repoRepository.save(repository);
 
-            return "README 삭제 완료. Repository ID: " + id;
+            return "README가 초기화 완료. Repository ID: " + id;
 
         } catch (Exception e) {
             e.printStackTrace();
